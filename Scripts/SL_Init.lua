@@ -341,7 +341,13 @@ SL = {
 			LifePercentChangeHeld=IsGame("pump") and 0.000 or 0.008,
 			LifePercentChangeHitMine=-0.05,
 		},
-	}
+	},
+	-- Used to store the elements of a chart after parsing a file.
+	-- This will include but is not limited to:
+	--    Path, the filename last parsed
+	--    and tables containing:
+	--        {stepsType, difficulty, description, hash, streamMeasures, peakNps, density}
+	FileCache = { }
 }
 
 

@@ -9,7 +9,11 @@ local af = Def.ActorFrame{
 		self:xy(_screen.cx - (IsUsingWideScreen() and 170 or 165), _screen.cy - 28)
 	end,
 
-	CurrentSongChangedMessageCommand=function(self)    self:playcommand("Set") end,
+	CurrentSongChangedMessageCommand=function(self)
+		local song = GAMESTATE:GetCurrentSong()
+		if song then ParseChartData(song) end
+		self:playcommand("Set")
+	end,
 	CurrentCourseChangedMessageCommand=function(self)  self:playcommand("Set") end,
 	CurrentStepsP1ChangedMessageCommand=function(self) self:playcommand("Set") end,
 	CurrentTrailP1ChangedMessageCommand=function(self) self:playcommand("Set") end,

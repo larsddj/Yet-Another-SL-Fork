@@ -15,7 +15,30 @@
 -- #VALUE2:PARAM2
 -- we'll recover.
 
-function ParseMsdFile(steps)
+local GetSimfileString = function(fileName)
+	-- Gets the file extension like "sm" or "SM" or "ssc" or "SSC" or "sSc" and
+	-- converts to lowercase for matching purposes.
+	local filetype = fileName:match("[^.]+$"):lower()
+	-- if file doesn't match "ssc" or "sm", it was (hopefully) something else (.dwi, .bms, etc.)
+	-- that isn't supported by SL-MsdFileParser
+	if not (filetype == "ssc" or filetype == "sm") then return end
+
+	-- Create a generic RageFile that we'll use to read the contents
+	-- of the desired .ssc or .sm file.
+	local f = RageFileUtil.CreateRageFile()
+	local contents
+
+	-- The second argument here (the 1) signals that we are opening the file in read-only mode
+	if f:Open(fileName, 1) then
+		contents = f:Read()
+	end
+
+	-- Destroy the generic RageFile now that we have the contents
+	f:destroy()
+	return contents, filetype
+end
+
+function ParseMsdFile(fileName)
 	local function AddParam(t, p, plen, fileType)
 		-- table.concat(table_name, separator, start, end)
 		local param = table.concat(p, '', 1, plen)
@@ -43,7 +66,7 @@ function ParseMsdFile(steps)
 		table.insert(t[#t], param)
 	end
 
-	local simfileString, fileType = GetSimfileString(steps)
+	local simfileString, fileType = GetSimfileString(fileName)
 	if not simfileString then return {} end
 
 	local final = {}
